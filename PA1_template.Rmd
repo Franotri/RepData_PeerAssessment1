@@ -5,9 +5,7 @@ output:
     keep_md: true
 ---
 
-
 ## Loading and preprocessing the data
-
 
 ```{r echo=TRUE}
 setwd("C:/Users/Franck/Desktop/coursera/reproducibility")
@@ -22,13 +20,14 @@ hday<-hour[1:288]
 ```
 
 ##What is mean total number of steps taken per day?
-**Summming the steps for each day in a new table**
+
+- Summming the steps for each day in a new table
 
 ```{r echo=TRUE}
 by_day<-aggregate(steps~date,data=db,FUN=sum)
 ```
 
-**and then build the histogram of daily steps (meaning the repartition, and not the evolution of steps by day, which would be a barplot)**
+- then building the histogram of daily steps
 
 ```{r echo=TRUE}
 library(ggplot2)
@@ -40,25 +39,28 @@ histo<-ggplot(by_day,aes(steps))+
 print(histo)
 ```
 
-**calculation of daily steps mean **
+- calculation of daily steps mean  
+
 ```{r echo=TRUE}
 mean(by_day$steps)
 ```
 
-**calculation of daily steps median **
+- calculation of daily steps median  
+
 ```{r echo=TRUE}
 median(by_day$steps)
 ```
 
 
 ##What is the average daily activity pattern?
-**first, I create a data summary of number of steps by interval**
+
+- first, creating a data summary of number of steps by interval
 
 ```{r echo=TRUE}
 by_interval<-aggregate(steps~interval,data=db,FUN=mean)
 ```
 
-**Then I display it on a graph**
+- then displaying it on a graph
 
 ```{r echo=TRUE}
 ts_plot<-ggplot(by_interval,aes(interval,steps))+geom_line()+xlab("interval (5 min interval)")+ylab("average nb of steps")+ggtitle("average patern of steps taken along a day")
@@ -74,13 +76,13 @@ paste("maximum steps taken on interval of ", hourmax, " with an average of ", ro
 
 ##Imputing missing values
 
-**total number of missing values in the dataset**
+- total number of missing values in the dataset
 
 ```{r echo=TRUE}
 sum(is.na(DB$steps))
 ```
 
-**new dataset will be in DB2, missing values will be replaced by the mean for the considered interval, calculated earlier** 
+- new dataset will be in DB2, missing values will be replaced by the mean for the considered interval, calculated earlier  
 
 ```{r echo=TRUE}
 DB2<-DB
@@ -92,8 +94,8 @@ for (i in 1:length(naDB$steps)) {
 DB2[indexNA,"steps"]<-naDB$steps
 ```
 
-**retaking the first steps, with an histogram of total of steps taken each day  
-and calculation of the mean and median total number of steps taken per day**
+- retaking the firsts steps, with an histogram of total of steps taken each day  
+and calculation of the mean and median total number of steps taken per day
 
 ```{r echo=TRUE}
 by_day2<-aggregate(steps~date,data=DB2,FUN=sum)
@@ -114,7 +116,9 @@ print(histo2)
 ```{r echo=TRUE}
 mean(by_day2$steps)
 ```
-For memory, mean of non imputed data was:
+
+*For memory, mean of non imputed data was:*
+
 ```{r echo=TRUE}
 mean(by_day$steps)
 ```
@@ -126,7 +130,7 @@ mean(by_day$steps)
 median(by_day2$steps)
 ```
 
-For memory, median of non imputed data was:
+*For memory, median of non imputed data was:*
 
 ```{r echo=TRUE}
 median(round(by_day$steps))
@@ -136,7 +140,8 @@ median(round(by_day$steps))
 
 
 ##Are there differences in activity patterns between weekdays and weekends?
-**Creation of a factor to differentiate weekdays and weekend**
+
+- Creation of a factor to differentiate weekdays and weekend
 
 ```{r echo=TRUE}
 day<-weekdays(DB2$date)
@@ -151,7 +156,7 @@ we[WE==FALSE]<-"weekday"
 DB2<-cbind(DB2,we)
 ```
 
-**and then, the graphic comparison of a weekday and a weekend day**
+- and then, the graphic comparison of a weekday and a weekend day
 
 ```{r echo=TRUE}
 by_interval2<-aggregate(.~interval+we,data=DB2,FUN=mean)
